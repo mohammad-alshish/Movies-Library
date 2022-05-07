@@ -29,10 +29,11 @@ function handleTry (req, res) {
 
 server.get("/", handleGet);
 server.get("/fav", handleFavPage);
-server.get("", handleErrorNotFound);;
 server.get('/tren', handleTrendingPage); 
 server.get('/search',handleSearchPage);
-
+server.get('/top_rated',handleTtop_ratedPage);
+server.get('/now_playing',handleNow_playingPage);
+server.get("*", handleErrorNotFound);
 
 
 function Movies (title, poster_path, overview) {
@@ -67,8 +68,7 @@ function handleErrorNotFound (req,res){
 
 
 
-function handleTrendingPage(req , res)
-{ 
+function handleTrendingPage(req , res) { 
     let dataAPI=[];
     let url = `https://api.themoviedb.org/3/trending/all/week?api_key=${APIKEY}&language=en-US`;  
         axios.get(url).then(result=>{
@@ -88,8 +88,8 @@ function handleTrendingPage(req , res)
         let url1 = `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&language=en-US&query=${MovieName}&page=1`;
         axios.get(url1).then(result=>{
             console.log(result.data);
-            result.data.results.map(elem=>{
-                searchAPI.push(new MoviesAPI (elem.id ,elem.title,elem.release_date,elem.poster_path, elem.overview ));
+            result.data.results.map(ele=>{
+                searchAPI.push(new MoviesAPI (ele.id ,ele.title,ele.release_date, ele.poster_path, ele.overview));
             }); 
             res.status(200).json(searchAPI);
         }).catch((errMsg)=>{
@@ -100,6 +100,34 @@ function handleTrendingPage(req , res)
     
     }
 
+    function handleTtop_ratedPage (req , res){ 
+    let topAPI=[];
+    let url2 = `https://api.themoviedb.org/3/movie/top_rated?api_key=${APIKEY}&language=en-US&page=1`;  
+        axios.get(url2).then(result=>{
+           console.log(result.data); 
+            result.data.results.map(ele =>{
+            topAPI.push(new MoviesAPI (ele.id ,ele.title,ele.release_date, ele.poster_path, ele.overview));
+            });
+            res.status(200).json(topAPI);
+        }).catch((errMsg)=>{
+            console.log(errMsg); 
+        });
+    }
+
+    function handleNow_playingPage (req , res){ 
+        let nowAPI=[];
+        let url3 = `https://api.themoviedb.org/3/movie/now_playing?api_key=${APIKEY}&language=en-US&page=1
+        `;  
+            axios.get(url3).then(result=>{
+               console.log(result.data); 
+                result.data.results.map(ele =>{
+                    nowAPI.push(new MoviesAPI (ele.id ,ele.title,ele.release_date, ele.poster_path, ele.overview));
+                });
+                res.status(200).json(nowAPI);
+            }).catch((errMsg)=>{
+                console.log(errMsg); 
+            });
+        }
 server.listen(3000, ()=>{
     console.log("listinig to port 3000");
 });
