@@ -33,6 +33,11 @@ server.get('/top_rated',handleTtop_ratedPage);
 server.get('/now_playing',handleNow_playingPage);
 server.post('/postMovie',handelpostMovie);
 server.get('/getMovies',handelGetMovies);
+//------------------------------Task------------------------------
+server.put('/updateMovie/:id',handelUpdatePage);
+server.delete('/deleteMovie/:id',handleDeletePage);
+server.get('getMovie/:id',handleGetIdPage);
+//----------------------------------------------
 server.get("*", handleErrorNotFound);
 server.get(handleServerError)
 //-----------------------------------------------------------------------------------------------
@@ -146,7 +151,8 @@ function handleTrendingPage(req , res) {
                 console.log(result);
             }
                 ).catch((errMsg)=>{
-                    console.log(errMsg); 
+                    console.log(errMsg);
+                    handleServerError (Error,req,res) 
                 });
             }
             
@@ -156,20 +162,76 @@ function handleTrendingPage(req , res) {
                 client.query(sql).then(result=>{
                 res.status(200).json(result.rows)
                 }).catch((errMsg)=>{
-                    console.log(errMsg); 
+                    console.log(errMsg);
+                     
                 });
             }
             
     
-            function handleServerError (Error,req,res){                      
-                const error = {
-                    status : 500,
-                    message : Error
-                };
-                res.status(500).send(error);
-            }
+//-------------------------------------Task14-----------------------------------------------------------
+function handelUpdatePage (req,res)           //update movie comments by id  
+{
+    
+           let title = req.body.title  
+           let release_date = req.body.release_date
+           let poster_path = req.body.poster_path
+           let overview = req.body.overview
+           const id = req.params.id;
+    const sql = `UPDATE me
+    SET title=$1, release_date=$2, poster_path=$3, overview=$4 
+    WHERE id=$5 RETURNING *;`;
+                 let values = [title,release_date, poster_path, overview, id]; 
+    client.query (sql,values).then(result=>{
+        console.log(result);
+        res.status(201).json(result.rows);
+    }).catch((errMsg)=>{
+        console.log(errMsg);
+         
+    });
+
+}
+
+function handleDeletePage(req,res)        //Delete movie by id  
+{
+    const id = req.params.id;
+    const sql = `DELETE FROM me WHERE id=${id}`; 
+    client.query(sql).then(()=>{
+        res.status(200).json("Movie has been deleted");
+    }).catch((errMsg)=>{
+        console.log(errMsg);       
+});
+}
+
+function handleGetIdPage (req,res)        //get movie by id 
+{
+    const id = req.params.id;
+    const sql = `SELECT id FROM me WHERE id=${id};`; 
+    let values = [title,release_date, poster_path, overview, id];
+    client.query(sql,values).then(result=>{
+        console.log(result);
+        res.status(200).json(result.rows);
+        }).catch((errMsg)=>{
+            console.log(errMsg);
+             
+        });
+
+}
+
+
+
+
+
+function handleServerError (Error,req,res){                      
+    const error = {
+        status : 500,
+        message : Error
+    };
+   
+}
+
+//----------------------------------------------------------------------------------------------
  client.connect().then(()=> {
      server.listen(port, ()=>
      {console.log(`server is running on ${port}`)})
-        });
+        })
         
