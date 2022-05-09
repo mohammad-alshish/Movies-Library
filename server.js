@@ -2,13 +2,13 @@
 
 const express = require('express');
 const server = express();
-//server.use(express.json());
+server.use(express.json());
 //---------------------------------------------------------------------
 const cors = require('cors');
 server.use(cors());
 const port = 3000
 //------------------------------------------------------------------------------
-const url5 = "postgres://mohammad:12345@localhost:5432/mohammad"
+const url5 = "postgres://mohammad:12345@localhost:5432/me"
 const { Client } = require('pg');
 const client = new Client (url5)
 const bodyParser = require('body-parser')
@@ -134,31 +134,31 @@ function handleTrendingPage(req , res) {
          
        
         function handelpostMovie (req, res) {
-            console.log(req.body);res.send("ok")
+            console.log(req.body);res.send("ok");
            let title = req.body.title  
            let release_date = req.body.release_date
            let poster_path = req.body.poster_path
            let overview = req.body.overview
             
-            const sql = `INSERT INTO movies (title, release_date, poster_path, overview) VALUES ($1, $2, $3, $4)`
+            const sql = `INSERT INTO me (title, release_date, poster_path, overview) VALUES ($1, $2, $3, $4) RETURNING *;`;
             let values = [title,release_date, poster_path, overview];
             client.query(sql,values).then(result =>{
-                console.log(result)
+                console.log(result);
             }
-                ).catch((error)=>{
-                    console.log(error);
-                    handleServerError(error,req,res);
+                ).catch((errMsg)=>{
+                    console.log(errMsg); 
                 });
             }
             
             function handelGetMovies (req,res)
             {
-                let sql='SELECT * FROM movieTable;';
+                let sql='SELECT * FROM me;';
                 client.query(sql).then(result=>{
                 res.status(200).json(result.rows)
-                }).console.log(error);
-                    handleServerError(error,request,response);
-                }
+                }).catch((errMsg)=>{
+                    console.log(errMsg); 
+                });
+            }
             
     
             function handleServerError (Error,req,res){                      
@@ -166,7 +166,7 @@ function handleTrendingPage(req , res) {
                     status : 500,
                     message : Error
                 };
-                response.status(500).send(error);
+                res.status(500).send(error);
             }
  client.connect().then(()=> {
      server.listen(port, ()=>
