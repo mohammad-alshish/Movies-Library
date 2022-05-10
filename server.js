@@ -8,15 +8,15 @@ const cors = require('cors');
 server.use(cors());
 const port = 3000
 //------------------------------------------------------------------------------
-const url5 = "postgres://kzyrbcnxxtyndw:cbe4b36510a7b1f5412c92174f55e65244bd6af94271b7085ab9754739b23f8d@ec2-63-32-248-14.eu-west-1.compute.amazonaws.com:5432/d2ohns4gjuqaqs"
+//let ul5 = process.env.DATABASE_URL
 const { Client } = require('pg');
-//const client = new Client (url5)
-const client = new Client({
-    connectionString: url5,
-    ssl: {
-        rejectUnauthorized: false
-    }
-})
+const client = new Client ("postgres://mohammad:12345@localhost:5432/me")
+// const client = new Client({
+//     connectionString: url5,
+//     ssl: {
+//         rejectUnauthorized: false
+//     }
+// })
 const bodyParser = require('body-parser')
 //---------------------------------------------------------------------------
 const moviesDataJson = require('./Movie Data/data.json');
