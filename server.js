@@ -44,7 +44,6 @@ server.delete('/DELETE/:id',handleDeletePage);
 server.get('/getMovie/:id',handleGetIdPage);
 //----------------------------------------------
 server.get("*", handleErrorNotFound);
-//server.get(handleServerError)
 //-----------------------------------------------------------------------------------------------
 function Movies (title, poster_path, overview) {
     this.title = title;
