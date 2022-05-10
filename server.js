@@ -34,8 +34,8 @@ server.get('/now_playing',handleNow_playingPage);
 server.post('/postMovie',handelpostMovie);
 server.get('/getMovies',handelGetMovies);
 //------------------------------Task------------------------------
-server.put('/updateMovie/:id',handelUpdatePage);
-server.delete('/deleteMovie/:id',handleDeletePage);
+server.put('/UPDATE/:id',handelUpdatePage);
+server.delete('/DELETE/:id',handleDeletePage);
 server.get('getMovie/:id',handleGetIdPage);
 //----------------------------------------------
 server.get("*", handleErrorNotFound);
@@ -171,7 +171,6 @@ function handleTrendingPage(req , res) {
 //-------------------------------------Task14-----------------------------------------------------------
 function handelUpdatePage (req,res)           //update movie comments by id  
 {
-    
            let title = req.body.title  
            let release_date = req.body.release_date
            let poster_path = req.body.poster_path
@@ -205,17 +204,14 @@ function handleDeletePage(req,res)        //Delete movie by id
 function handleGetIdPage (req,res)        //get movie by id 
 {
     const id = req.params.id;
-    const sql = `SELECT id FROM me WHERE id=${id};`; 
-    let values = [title,release_date, poster_path, overview, id];
-    client.query(sql,values).then(result=>{
-        console.log(result);
-        res.status(200).json(result.rows);
+    let sql = `SELECT * FROM me WHERE id = ${id}`;
+    client.query(sql).then(result=>{
+        res.status(200).json(result.rows)
         }).catch((errMsg)=>{
-            console.log(errMsg);
-             
-        });
-
+            console.log(errMsg);       
+    });
 }
+
 
 
 
