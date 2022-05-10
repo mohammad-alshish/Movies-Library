@@ -10,7 +10,13 @@ const port = 3000
 //------------------------------------------------------------------------------
 const url5 = "postgres://mohammad:12345@localhost:5432/me"
 const { Client } = require('pg');
-const client = new Client (url5)
+//const client = new Client (url5)
+const client = new Client({
+    connectionString: url5,
+    ssl: {
+        rejectUnauthorized: false
+    }
+})
 const bodyParser = require('body-parser')
 //---------------------------------------------------------------------------
 const moviesDataJson = require('./Movie Data/data.json');
